@@ -1,5 +1,8 @@
-package gameOfLife;
+package gameOfLife.gameOfLife;
+import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -18,10 +21,15 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.Rectangle;
+import java.awt.Robot;
+
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -64,6 +72,7 @@ public class gameOfLife {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		//Randomizer for r key
 		KeyAdapter randomKeyAdapter= new KeyAdapter() {
 			@Override
 			
@@ -94,15 +103,15 @@ public class gameOfLife {
 		frame.addKeyListener(randomKeyAdapter);
 		frame.requestFocus();
 		frame.getContentPane().setLayout(null);
-
-		frame.setBounds(100, 100, 450, 300);
-		//frame.setBounds(100, 100, 600, 600);
+		int height=50;
+		int width=75;
 		
 		//initializes all cells
 		int y = 0, x = 0;
-		cells = new Cell[(int) ((double) frame.getHeight() / 12.0)][(int) ((double) frame.getWidth() / 12.0)];
-		for (y = 0; y < (int) ((double) frame.getHeight() / 12.0); y++) {
-			for (x = 0; x < (int) ((double) frame.getWidth() / 12.0); x++) {
+		//first sets up cells and put it into array
+		cells = new Cell[height][width];
+		for (y = 0; y < height; y++) {
+			for (x = 0; x <width; x++) {
 				Cell cell = new Cell();
 				cell.dead();
 				cell.setBounds(x * 12, y * 12, 10, 10);
@@ -115,6 +124,7 @@ public class gameOfLife {
 			}
 			
 		}
+		
 		//sets up neighbors
 		int maxY = cells.length;
 		int maxX = cells[0].length;
@@ -131,14 +141,18 @@ public class gameOfLife {
 				}
 			}
 		}
-		System.out.println((x * 12+10)+","+ (y * 15));
-		frame.setBounds(100, 100, x * 12+10, y * 15);
+		int xDif= frame.getWidth()-frame.getContentPane().getWidth();
+		int yDif = 41;
+		int interfaceSpace=40;
+		frame.pack();
+		frame.setSize(cells[cells.length-1][cells[0].length-1].getX()+15+xDif,cells[cells.length-1][cells[0].length-1].getY()+yDif+interfaceSpace);
+		frame.setResizable(false);
 		JButton btnPause = new JButton("Pause");
 		btnPause.setFocusable(false);
-		btnPause.setBounds((int) (frame.getWidth() / 2.0) - (int) (115.0 / 2.0), frame.getHeight() - 65, 115, 25);
+		btnPause.setBounds((int) (frame.getContentPane().getWidth() / 2.0) - (int) (115.0 / 2.0), frame.getHeight() - 25-yDif, 115, 25);
 		btnPause.setVisible(true);
 		
-		//pause button
+		//pause button action
 		btnPause.addActionListener(new ActionListener() {
 
 			@Override
@@ -155,9 +169,10 @@ public class gameOfLife {
 		});
 		JButton clearButton = new JButton("Clear");
 		clearButton.setFocusable(false);
-		clearButton.setBounds(btnPause.getX()-115-10,btnPause.getY(),115, 25);
+		clearButton.setBounds(btnPause.getX()+115+10,btnPause.getY(),115, 25);
 		clearButton.setVisible(true);
 		frame.getContentPane().add(clearButton);
+		//clear button action
 		clearButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -177,9 +192,9 @@ public class gameOfLife {
 		JSlider slider = new JSlider();
 		slider.setFocusable(false);
 		slider.setMinimum(1);
-		slider.setBounds(295, 309, 143, 26);
+		slider.setBounds(clearButton.getWidth()+clearButton.getX()+10,clearButton.getY(),150,25);
 		slider.setMaximum(1000);
-		slider.setBounds(295, 309, 143, 26);
+		//slider click activation
 		slider.addMouseListener(new MouseAdapter() {@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
@@ -192,14 +207,13 @@ public class gameOfLife {
 		}
 		});
 		frame.getContentPane().add(slider);
-		
-		
-		sliderValue.setBounds(295, 309-15, 69, 20);
+		sliderValue.setBounds( slider.getWidth()+slider.getX()+10,slider.getY(), 69, 20);
+		sliderValue.setVisible(true);
 		frame.getContentPane().add(sliderValue);
-		frame.setResizable(false);
+		//gets icon for the frame
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("the-glider.png"));
 		frame.setIconImage(icon.getImage());
-		//timer 
+		//timer for the app
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				if(!paused) {
@@ -238,7 +252,9 @@ public class gameOfLife {
 				}
 			}
 		}, 500, 500);
+		//sets slider label initial
 		sliderValue.setText(slider.getValue()+"ms");
+		//when slider changes reset timer
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				timer.cancel();
@@ -288,7 +304,7 @@ public class gameOfLife {
 
 		slider.setValue(500);
 	}
-	
+	//pause action
 	void pause(boolean state) {
 		for (int y = 0; y < cells.length; y++) {
 			for (int x = 0; x < cells[0].length; x++) {

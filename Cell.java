@@ -1,4 +1,4 @@
-package gameOfLife;
+package gameOfLife.gameOfLife;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -22,6 +22,7 @@ public class Cell extends JLabel {
 	public Cell() {
 		BufferedImage deadBufferedImage = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 		Graphics g = deadBufferedImage.getGraphics();
+		
 		g.setColor(Color.black);
 		g.fillRect(0, 0, 10, 10);
 		g.setColor(Color.white);
