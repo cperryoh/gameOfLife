@@ -14,6 +14,7 @@ public class Cell extends JLabel {
 	ImageIcon deadIcon;
 	public boolean willBeAliveNextGen;
 	public boolean alive;
+	ImageIcon wasAliveIcon;
 	boolean down;
 	ImageIcon aliveIcon;
 	public boolean paused=false;
@@ -35,6 +36,14 @@ public class Cell extends JLabel {
 		g.fillRect(0, 0, 10, 10);
 		g.finalize();
 		aliveIcon = new ImageIcon(aliveBufferedImage);
+		BufferedImage wasAliveBufferedImage = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+		g=wasAliveBufferedImage.getGraphics();
+		g.setColor(Color.black);
+		g.fillRect(0, 0, 10, 10);
+		g.setColor(new Color(128,128,128));
+		g.fillRect(1, 1, 8, 8);
+		g.finalize();
+		wasAliveIcon = new ImageIcon(wasAliveBufferedImage);
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -56,6 +65,11 @@ public class Cell extends JLabel {
 			
 			
 		});
+	}
+	public void wasAlive() {
+		setIcon(wasAliveIcon);
+		alive=false;
+		willBeAliveNextGen=false;
 	}
 	public int getAliveCount() {
 		int count=0;
