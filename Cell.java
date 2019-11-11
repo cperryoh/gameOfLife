@@ -1,4 +1,4 @@
-package gameOfLife.gameOfLife;
+package gameOfLife;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
