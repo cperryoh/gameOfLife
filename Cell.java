@@ -16,6 +16,7 @@ public class Cell extends JLabel {
 	public boolean alive;
 	ImageIcon wasAliveIcon;
 	boolean down;
+	boolean wasAlive;
 	ImageIcon aliveIcon;
 	public boolean paused=false;
 	public ArrayList<Cell> neighbors = new ArrayList<Cell>();
@@ -50,15 +51,10 @@ public class Cell extends JLabel {
 				// TODO Auto-generated method stub
 				if(paused) {
 					if(alive) {
-						setIcon(deadIcon);
-						alive=false;
-						willBeAliveNextGen=false;
-						System.out.println(paused);
+						dead();
 					}
 					else {
-						setIcon(aliveIcon);
-						alive=true;
-						willBeAliveNextGen=true;
+						alive();
 					}
 				}
 			}
@@ -69,6 +65,7 @@ public class Cell extends JLabel {
 	public void wasAlive() {
 		setIcon(wasAliveIcon);
 		alive=false;
+		wasAlive=true;
 		willBeAliveNextGen=false;
 	}
 	public int getAliveCount() {
@@ -83,6 +80,7 @@ public class Cell extends JLabel {
 	public void dead() {
 		setIcon(deadIcon);
 		alive=false;
+		wasAlive=false;
 		willBeAliveNextGen=false;
 	}
 	public void alive() {

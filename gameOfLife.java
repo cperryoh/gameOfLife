@@ -207,7 +207,7 @@ public class gameOfLife {
 							if (cell.willBeAliveNextGen) {
 								cell.alive();
 							} else {
-								if (cell.alive) {
+								if (cell.alive||cell.wasAlive) {
 									cell.wasAlive();
 								} else {
 									cell.dead();
@@ -254,7 +254,7 @@ public class gameOfLife {
 									if (cell.willBeAliveNextGen) {
 										cell.alive();
 									} else {
-										if (cell.alive) {
+										if (cell.alive||cell.wasAlive) {
 											cell.wasAlive();
 										} else {
 											cell.dead();
